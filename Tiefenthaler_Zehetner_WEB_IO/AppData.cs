@@ -193,8 +193,9 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         #region methods
         public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
         {
-            readOfDataSuccesfull = true;
             string[] parts = dataLine.Split(seperator);
+
+            //convert stringdata to correct Datatype
             string appName = parts[0];
             string category = parts[1];
             int rating = int.Parse(parts[2]);
@@ -219,7 +220,8 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string currentVersion = parts[10];
             string androidVersion = parts[11];
 
-            AppData readData = new AppData(appName, category, rating, reviews, size, install, type, price, content, genres, lastUpdated, currentVersion, androidVersion);
+            //create new object of class AppData
+            AppData readData = new(appName, category, rating, reviews, size, install, type, price, content, genres, lastUpdated, currentVersion, androidVersion);
             return readData;
         }
         public static double ConvertSizeToDouble(string inputSize)
@@ -243,6 +245,14 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 throw new Exception("Convertion of Input wasn't possible.");
             }
             return convertedSize;
+        }
+        public string DataToCsvLine(char seperator)
+        {
+            string csvLine =
+                AppName + seperator + Category + seperator + Rating + seperator + Reviews + seperator + Size + seperator + Install + seperator + Type + seperator + Price + seperator + Content + seperator + Genres + seperator + LastUpdated.ToShortDateString() + seperator + CurrentVersion + seperator + AndroidVersion;
+
+
+            return csvLine;
         }
         #endregion
     }
