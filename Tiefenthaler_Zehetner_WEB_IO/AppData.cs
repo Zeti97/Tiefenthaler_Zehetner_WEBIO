@@ -175,26 +175,41 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         }
         public AppData(string appName, string category, int rating, int reviews, double size, long install, EnumType.TypeSelection type, double price, string content, string genres, DateTime lastUpdated, string currentVersion, string androidVersion)
         {
-
+            AppName = appName;
+            Category = category;
+            Rating = rating;
+            Reviews = reviews;
+            Size = size;
+            Install = install;
+            Type = type;
+            Price = price;
+            Content = content;
+            Genres = genres;
+            LastUpdated = lastUpdated;
+            CurrentVersion = currentVersion;
+            AndroidVersion = androidVersion;
         }    
         #endregion
         #region methods
-        public static AppData ReadDataLine(string dataLine, char seperator)
+        public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
         {
+            readOfDataSuccesfull = true;
             string[] parts = dataLine.Split(seperator);
             string appName = parts[0];
             string category = parts[1];
             int rating = int.Parse(parts[2]);
             int reviews = int.Parse(parts[3]);
-            double size = ConvertSizeToDouble(parts[4]);
-            long install;
+            double size = 0.0;//ConvertSizeToDouble(parts[4]);
+            long install = 0;
             if(parts[5].EndsWith('+'))
             {
-                install = long.Parse(parts[5].Remove(parts[5].Length - 1));
+                //string rowInstall = (parts[5].Remove(parts[5].Length - 1)).r);
+                //install = long.Parse(rowInstall);
             }
             else
             {
-                throw new Exception("Install input doesn't ends with an \"+\"");
+               // throw new Exception("Install input doesn't ends with an \"+\"");
+                readOfDataSuccesfull = false;
             }
             EnumType.TypeSelection type = (EnumType.TypeSelection)Enum.Parse(typeof(EnumType.TypeSelection), parts[6]);
             double price = double.Parse(parts[7]);
