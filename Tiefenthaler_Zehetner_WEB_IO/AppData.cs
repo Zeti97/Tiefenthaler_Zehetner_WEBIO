@@ -193,6 +193,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         #region methods
         public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
         {
+            readOfDataSuccesfull = false; //gehört beschrieben
             string[] parts = dataLine.Split(seperator);
 
             //convert stringdata to correct Datatype
@@ -200,9 +201,9 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string category = parts[1];
             int rating = int.Parse(parts[2]);
             int reviews = int.Parse(parts[3]);
-            double size = 0.0;//ConvertSizeToDouble(parts[4]);
+            double size = 0.0;//ConvertSizeToDouble(parts[4]);  // passt noch nicht
             long install = 0;
-            if(parts[5].EndsWith('+'))
+            if(parts[5].EndsWith('+')) //Passt noch nicht
             {
                 //string rowInstall = (parts[5].Remove(parts[5].Length - 1)).r);
                 //install = long.Parse(rowInstall);
@@ -210,7 +211,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             else
             {
                // throw new Exception("Install input doesn't ends with an \"+\"");
-                readOfDataSuccesfull = false;
+                readOfDataSuccesfull = false; 
             }
             EnumType.TypeSelection type = (EnumType.TypeSelection)Enum.Parse(typeof(EnumType.TypeSelection), parts[6]);
             double price = double.Parse(parts[7]);

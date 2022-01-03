@@ -220,5 +220,9 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 Console.WriteLine(filterdData[i].AppName + "  " + filterdData[i].Price);
             }
         } //Ausgabe gehört noch gemacht
+
+        //Exception Handling gehört noch gemacht
+
+        //Daten in Datei laden
     }
 }
