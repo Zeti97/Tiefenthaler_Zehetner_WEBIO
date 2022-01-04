@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Tiefenthaler_Zehetner_WEB_IO
 {
-    public class DataLoader
+    public class DataLoader //erstellt von Zehetner
     {
         #region members
 
         #endregion
-
 
         #region methoden
         public static List<AppData> LoadDataFromWeb(string path,char seperator, out int error)
@@ -45,30 +44,25 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
                 }
             }
-            catch (ArgumentNullException aex)
+            catch (ArgumentNullException)
             {
                 error = 1;
-                //Console.WriteLine("path was null (empty)");
             }
-            catch (DirectoryNotFoundException dex)
+            catch (DirectoryNotFoundException)
             {
                 error = 3;
-                //Console.WriteLine("Folder not found");
             }
-            catch (FileNotFoundException fex)
+            catch (FileNotFoundException)
             {
                 error = 8;
-                //Console.WriteLine("Path too Long");
             }
-            catch (IOException iex)
+            catch (IOException)
             {
                 error = 5;
-                //Console.WriteLine("File interaction error");
             }
-            catch (ArgumentException aex)    //case: ArgumentExeption
+            catch (ArgumentException)    
             {
                 error = 6;
-                //Console.WriteLine("path invalid");
             }
             catch (Exception)
             {

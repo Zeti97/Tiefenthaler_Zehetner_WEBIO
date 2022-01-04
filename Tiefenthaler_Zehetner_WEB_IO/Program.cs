@@ -8,13 +8,13 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         static void Main(string[] args)
         {
             List<AppData> filteredData = new List<AppData>();
-            filteredData = FilterAndReadData();
 
+            filteredData = FilterAndReadData();
             WriteFilteredDataToConsole(filteredData);
 
             Console.ReadKey();
         }
-        static List<AppData> FilterAndReadData()
+        static List<AppData> FilterAndReadData()//Zehetner
         {
             //Initialize Data Paths
             string pathHealthFitness = "https://fhwels.s3.eu-central-1.amazonaws.com/PRO1UE_WS21/HealthFitnessApps.CSV";
@@ -95,7 +95,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             return filterdData;
 
         }
-        static int AskAndCheckCategoryNumber()
+        static int AskAndCheckCategoryNumber()//Zehetner
         {
             bool categorySelectionInCorrectFormat = false;
             int categoryNumber;
@@ -119,31 +119,31 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             return categoryNumber;
         }
-        static bool AskYesOrNo()
+        static bool AskYesOrNo()//Zehetner
         {
-            bool filterOverAllDataInCorrectFormat = false;
-            bool filterOverallDataSelection = false;
+            bool inputIsinCorrectDataFormat = false;
+            bool yesOrNo = false;
 
             do
             {
-                string rowFilterOverAllData = Console.ReadLine();
+                string rowYesOrNo = Console.ReadLine();
 
-                if (rowFilterOverAllData.ToLower() == "j")
+                if (rowYesOrNo.ToLower() == "j")
                 {
-                    filterOverallDataSelection = true;
+                    yesOrNo = true;
 
                 }
-                if (rowFilterOverAllData.ToLower() == "n" || filterOverallDataSelection == true)
+                if (rowYesOrNo.ToLower() == "n" || yesOrNo == true)
                 {
-                    filterOverAllDataInCorrectFormat = true;
+                    inputIsinCorrectDataFormat = true;
                 }
                 else Console.WriteLine("Daten wurden im falschen Format eingegeben versuchen Sie es erneut!");
             }
-            while (!filterOverAllDataInCorrectFormat);
+            while (!inputIsinCorrectDataFormat);
 
-            return filterOverallDataSelection;
-        } //Bezeichnungen in Methode Ändern
-        static int AskFilterType()
+            return yesOrNo;
+        }
+        static int AskFilterType()//Zehetner
         {
             bool filterTypeInCorrectFormat = false;
             int fitlerTypeNumber;
@@ -167,31 +167,31 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             return fitlerTypeNumber;
         }
-        static bool AskMinOrMax () //Bezeichnungen in Methode Ändern
+        static bool AskMinOrMax ()//Zehetner
         {
-            bool filterOverAllDataInCorrectFormat = false;
-            bool filterOverallDataSelection = false;
+            bool inputDataInCorrectDataFormat = false;
+            bool minOrMax = false;
 
             do
             {
-                string rowFilterOverAllData = Console.ReadLine();
+                string rowMinOrMax = Console.ReadLine();
 
-                if (rowFilterOverAllData.ToLower() == "max")
+                if (rowMinOrMax.ToLower() == "max")
                 {
-                    filterOverallDataSelection = true;
+                    minOrMax = true;
 
                 }
-                if (rowFilterOverAllData.ToLower() == "min" || filterOverallDataSelection == true)
+                if (rowMinOrMax.ToLower() == "min" || minOrMax == true)
                 {
-                    filterOverAllDataInCorrectFormat = true;
+                    inputDataInCorrectDataFormat = true;
                 }
                 else Console.WriteLine("Daten wurden im falschen Format eingegeben versuchen Sie es erneut!");
             }
-            while (!filterOverAllDataInCorrectFormat);
+            while (!inputDataInCorrectDataFormat);
 
-            return filterOverallDataSelection;
+            return minOrMax;
         }
-        static int AskFilterValue()
+        static int AskFilterValue()//Zehetner
         {
             bool filterValueInCorrectFormat = false;
             int filterValue;
