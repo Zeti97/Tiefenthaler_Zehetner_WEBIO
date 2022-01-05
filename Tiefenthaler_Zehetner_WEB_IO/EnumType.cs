@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tiefenthaler_Zehetner_WEB_IO
 {
-    public class EnumType
+    public class EnumType   //Tiefenthaler
     {
         public enum TypeSelection
         {

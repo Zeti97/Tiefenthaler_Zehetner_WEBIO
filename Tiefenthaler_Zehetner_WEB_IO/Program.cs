@@ -265,13 +265,13 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             return filterValue;
         }
-        static void WriteFilteredDataToConsole(List<AppData> filterdData)
+        static void WriteFilteredDataToConsole(List<AppData> filterdData)//Tiefenthaler
         {
             for (int i = 0; i < filterdData.ToArray().Length; i++)
             {
                 Console.WriteLine(filterdData[i].CreateLineForConsole());
             }
-        } //Ausgabe gehört noch gemacht
+        }
         static void ErrorHandlingStream(int error)//Zehetner
         {
             if (error != 0)

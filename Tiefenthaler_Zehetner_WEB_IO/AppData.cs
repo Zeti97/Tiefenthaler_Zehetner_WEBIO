@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tiefenthaler_Zehetner_WEB_IO
 {
-    public class AppData
+    public class AppData    //Tiefenthaler
     {
         #region members
         private string _appName;
@@ -191,7 +191,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         }
         #endregion
         #region methods
-        public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
+        public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)//Tiefenthaler
         {
             readOfDataSuccesfull = false;
             AppData readData = new();
@@ -206,7 +206,8 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             bool successfulInstall = long.TryParse(parts[5], System.Globalization.NumberStyles.Number,
                                                    System.Globalization.NumberFormatInfo.InvariantInfo,
                                                    out long install);
-            EnumType.TypeSelection type = (EnumType.TypeSelection)Enum.Parse(typeof(EnumType.TypeSelection), parts[6]);
+            EnumType.TypeSelection type;
+            bool successfulType = Enum.TryParse<EnumType.TypeSelection>(parts[6], out type);
             bool successfulPrice = double.TryParse(parts[7], out double price);
             string content = parts[8];
             string genres = parts[9];
@@ -215,7 +216,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string androidVersion = parts[11];
 
             readOfDataSuccesfull = successfulRating && successfulReviews &&
-                                   successfulSize && successfulInstall &&
+                                   successfulSize && successfulInstall && successfulType &&
                                    successfulPrice && successfulLastUpdated;
 
             //create new object of class AppData
@@ -227,7 +228,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             }
             return readData;
         }
-        public static double ConvertSizeToDouble(string inputSize, out bool converssionSuccess)
+        public static double ConvertSizeToDouble(string inputSize, out bool converssionSuccess)//Tiefenthaler
         {
             double convertedSize = 0;
             converssionSuccess = false;
@@ -251,28 +252,49 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                                                      System.Globalization.NumberFormatInfo.InvariantInfo,
                                                      out convertedSize);
             }
-
             return convertedSize;
         }
-        public string DataToCsvLine(char seperator)
+        public string DataToCsvLine(char seperator)//Tiefenthaler
         {
             string csvLine =
                 AppName + seperator + Category + seperator + Rating + seperator +
-                Reviews + seperator + Size + seperator + Install + seperator +
-                Type + seperator + Price + seperator + Content + seperator +
-                Genres + seperator + LastUpdated.ToShortDateString() + seperator +
+                Reviews + seperator + ConvertSizeToString(Size) + seperator + 
+                Install.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + "+" + seperator +
+                Type + seperator + Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo) + seperator + 
+                Content + seperator + Genres + seperator + LastUpdated.ToShortDateString() + seperator +
                 CurrentVersion + seperator + AndroidVersion;
             return csvLine;
         }
-        public string CreateLineForConsole()
+        public string CreateLineForConsole()//Tiefenthaler
         {
             string lineForConsole = AppName.PadRight(82) + Category.PadRight(20) + Rating.ToString().PadRight(4) + 
                                     Reviews.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(10) +
-                                    Size.ToString().PadLeft(6) + "M  " + Install.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(15) +
-                                    Type.ToString().PadRight(6) + Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo) +
-                                    Content.PadRight(14) + Genres.PadRight(18) + LastUpdated.ToShortDateString().PadRight(12) +
+                                    ConvertSizeToString(Size).PadRight(6) + 
+                                    Install.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadLeft(15) + "+  " +
+                                    Type.ToString().PadRight(6) + 
+                                    Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(8) +
+                                    Content.PadRight(14) + Genres.PadRight(18) + 
+                                    LastUpdated.ToShortDateString().PadRight(12) +
                                     CurrentVersion.PadRight(35) + AndroidVersion.PadRight(20);
             return lineForConsole;
+        }
+        public static string ConvertSizeToString(double toConvertSize)//Tiefenthaler
+        {
+            string sizeString = "0";
+            if(toConvertSize == -100)
+            {
+                sizeString = "Varies with device";
+            }
+            if(toConvertSize < 1)
+            {
+                double sizekFormat = toConvertSize * 1000;
+                sizeString = sizekFormat.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + 'k';
+            }
+            if(toConvertSize >= 1)
+            {
+                sizeString = toConvertSize.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + 'M';
+            }
+            return sizeString;
         }
         #endregion
     }
