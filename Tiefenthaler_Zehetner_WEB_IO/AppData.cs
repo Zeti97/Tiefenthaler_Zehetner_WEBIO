@@ -193,57 +193,58 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         #region methods
         public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
         {
-            readOfDataSuccesfull = false; //gehört beschrieben
+            readOfDataSuccesfull = false;
+            AppData readData = new();
             string[] parts = dataLine.Split(seperator);
 
             //convert stringdata to correct Datatype
             string appName = parts[0];
             string category = parts[1];
-            int rating = int.Parse(parts[2]);
-            int reviews = int.Parse(parts[3]);
-            double size = 0.0;//ConvertSizeToDouble(parts[4]);  // passt noch nicht
-            long install = 0;
-            if(parts[5].EndsWith('+')) //Passt noch nicht
-            {
-                //string rowInstall = (parts[5].Remove(parts[5].Length - 1)).r);
-                //install = long.Parse(rowInstall);
-            }
-            else
-            {
-               // throw new Exception("Install input doesn't ends with an \"+\"");
-                readOfDataSuccesfull = false; 
-            }
+            bool successfulRating = int.TryParse(parts[2], out int rating);
+            bool successfulReviews = int.TryParse(parts[3], out int reviews);
+            double size = ConvertSizeToDouble(parts[4], out bool successfulSize);
+            bool successfulInstall = long.TryParse(parts[5], System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out long install);
             EnumType.TypeSelection type = (EnumType.TypeSelection)Enum.Parse(typeof(EnumType.TypeSelection), parts[6]);
-            double price = double.Parse(parts[7]);
+            bool successfulPrice = double.TryParse(parts[7], out double price);
             string content = parts[8];
             string genres = parts[9];
-            DateTime lastUpdated = DateTime.Parse(parts[10]);
+            bool successfulLastUpdated = DateTime.TryParse(parts[10], out DateTime lastUpdated);
             string currentVersion = parts[10];
             string androidVersion = parts[11];
 
+            readOfDataSuccesfull = successfulRating && successfulReviews && successfulSize && successfulInstall && successfulPrice && successfulLastUpdated;
+            
             //create new object of class AppData
-            AppData readData = new(appName, category, rating, reviews, size, install, type, price, content, genres, lastUpdated, currentVersion, androidVersion);
+            if(readOfDataSuccesfull)
+            {
+                readData = new(appName, category, rating, reviews, size, install, type, price, content, genres, lastUpdated, currentVersion, androidVersion);
+            }
             return readData;
         }
-        public static double ConvertSizeToDouble(string inputSize)
+        public static double ConvertSizeToDouble(string inputSize, out bool converssionSuccess)
         {
-            double convertedSize;
-            if(inputSize.Trim() == "Varies with device")
+            double convertedSize = 0;
+            converssionSuccess = false;
+            if(inputSize.Trim() == "Varies with device" || inputSize.EndsWith('k') || inputSize.EndsWith('M'))
             {
-                convertedSize = -100;
-            }
-            if(inputSize.EndsWith('k'))
-            {
-                convertedSize = double.Parse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberFormatInfo.InvariantInfo);
-                _ = convertedSize / 1000;
-            }
-            if(inputSize.EndsWith('M'))
-            {
-                convertedSize = double.Parse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberFormatInfo.InvariantInfo);
+                if(inputSize.Trim() == "Varies with device")
+                {
+                    convertedSize = -100;
+                    converssionSuccess = true;
+                }
+                if (inputSize.EndsWith('k'))
+                {
+                    converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out double readSize);
+                    convertedSize =  readSize / 1000;
+                }
+                if (inputSize.EndsWith('M'))
+                {
+                    converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out convertedSize);
+                }
             }
             else
             {
-                throw new Exception("Convertion of Input wasn't possible.");
+                converssionSuccess = false;
             }
             return convertedSize;
         }
