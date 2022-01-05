@@ -9,31 +9,83 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         {
             List<AppData> filteredData = new List<AppData>();
 
-            filteredData = FilterAndReadData();
+            List<AppData> listHealthFitness = new List<AppData>();
+            List<AppData> listPhotography = new List<AppData>();
+            List<AppData> listWeather = new List<AppData>();
+
+            //Read Data
+            ReadData(out listHealthFitness, out listPhotography, out listWeather);
+
+            //Filter Data
+            filteredData = FilterData(listHealthFitness, listPhotography, listWeather);
+
+            //Write Filterd Data to Console
             WriteFilteredDataToConsole(filteredData);
 
             Console.ReadKey();
         }
-        static List<AppData> FilterAndReadData()//Zehetner
+        static void ReadData(out List<AppData> HealthFitness, out List<AppData> Photography, out List<AppData> Weather)//Zehetner
         {
             //Initialize Data Paths
             string pathHealthFitness = "https://fhwels.s3.eu-central-1.amazonaws.com/PRO1UE_WS21/HealthFitnessApps.CSV";
             string pathPhotography = "https://fhwels.s3.eu-central-1.amazonaws.com/PRO1UE_WS21/PhotographyApps.CSV";
             string pathWeather = "https://fhwels.s3.eu-central-1.amazonaws.com/PRO1UE_WS21/WeatherApps.CSV";
 
-            //Load Data
-            List<AppData> listHealthFitness = new List<AppData>();
-            List<AppData> listPhotography = new List<AppData>();
-            List<AppData> listWeather = new List<AppData>();
+            //Health and Fitness
+            HealthFitness = DataLoader.LoadDataFromWeb(pathHealthFitness, ';', out int errorHealthAndFitness, out int invalidDataLinesHealthFitness);
+
+
+            if (errorHealthAndFitness > 0)
+            {
+                Console.WriteLine("Es ist ein unerwarteter Fehler beim Lesen der Fitness Apps aufgetretten,\n" +
+                    "Es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
+                    "Fehler: ");
+            }
+            ErrorHandlingStream(errorHealthAndFitness);
+
+            if (invalidDataLinesHealthFitness > 0)
+            {
+                Console.WriteLine("Es konnten " + invalidDataLinesHealthFitness + " Zeilen der Fitness Apps nicht geladen werden!\n");
+            }
+
+            //Photography
+            Photography = DataLoader.LoadDataFromWeb(pathPhotography, ';', out int errorPhotography, out int invalidDataLinesPhotography);
+           
+            if (errorPhotography > 0)
+            {
+                Console.WriteLine("Es ist ein unerwarteter Fehler beim Lesen der Fotografie Apps aufgetretten,\n" +
+                    "es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
+                    "Fehler: ");
+            }
+            ErrorHandlingStream(errorPhotography);
+
+            if (invalidDataLinesPhotography > 0)
+            {
+                Console.WriteLine("Es konnten " + invalidDataLinesPhotography + " Zeilen der Fotografie Apps nicht geladen werden!\n");
+            }
+
+            //Weather
+            Weather = DataLoader.LoadDataFromWeb(pathWeather, ';', out int errorWeather, out int invalidDataLinesWeather);
+             if (errorWeather > 0)
+            {
+                Console.WriteLine("\nEs ist ein unerwarteter Fehler beim Lesen der Wetter Apps aufgetretten,\n" +
+                    "es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
+                    "Fehler: ");
+            }
+            ErrorHandlingStream(errorWeather);
+
+            if (invalidDataLinesWeather > 0)
+            {
+                Console.WriteLine("Es konnten " + invalidDataLinesWeather + " Zeilen der Wetter Apps nicht geladen werden!\n");
+            }
+        }
+        static List<AppData> FilterData(List<AppData> listHealthFitness,List<AppData> listPhotography,List<AppData> listWeather)//Zehetner
+        {
             List<AppData> listForFilter = new List<AppData>();
             List<AppData> filterdData = new List<AppData>();
 
-            listHealthFitness = DataLoader.LoadDataFromWeb(pathHealthFitness, ';', out int errorHealthAndFitness);
-            listPhotography = DataLoader.LoadDataFromWeb(pathPhotography, ';', out int errorPhotography);
-            listWeather = DataLoader.LoadDataFromWeb(pathWeather, ';', out int errorWeather);
-
             //Generate List For Filter
-            Console.WriteLine("Wollen Sie über alle Daten Filtern? J/N");
+            Console.WriteLine("\nWollen Sie über alle Daten Filtern? J/N");
             bool filterOverallDataSelection = AskYesOrNo();
             int categoryNumber = 0;
 
@@ -65,7 +117,6 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             int filterTypeNumber = AskFilterType();
 
             //AskIfMinOrMaxValue
-            Console.WriteLine("Wollen Sie auf Minimum oder Maximum Filtern? Max/Min");
             bool minOrMax = AskMinOrMax();
 
             //Ask Filter Value
@@ -78,7 +129,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             bool filterAgain = false;
             do
             {
-                Console.WriteLine("Wollen Sie zusätzlich auf eine andere Kategorie filtern? J/N");
+                Console.WriteLine("\nWollen Sie zusätzlich auf eine andere Kategorie filtern? J/N");
                 filterAgain = AskYesOrNo();
 
                 if (filterAgain == true)
@@ -101,7 +152,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             int categoryNumber;
             do
             {
-                Console.WriteLine("Über welche Kategorie wollen Sie filtern? \n" +
+                Console.WriteLine("\nÜber welche Kategorie wollen Sie filtern? \n" +
                     "1...Gesundheit und Fitness\n" +
                     "2...Fotografie\n" +
                     "3...Wetter");
@@ -149,7 +200,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             int fitlerTypeNumber;
             do
             {
-                Console.WriteLine("Über welches Kriterium wollen Sie filtern? \n" +
+                Console.WriteLine("\nÜber welches Kriterium wollen Sie filtern? \n" +
                     "1...Preis\n" +
                     "2...Rezensionen\n" +
                     "3...Dateigröße");
@@ -174,6 +225,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             do
             {
+                Console.WriteLine("\nWollen Sie auf Minimum oder Maximum Filtern? Max/Min");
                 string rowMinOrMax = Console.ReadLine();
 
                 if (rowMinOrMax.ToLower() == "max")
@@ -197,7 +249,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             int filterValue;
             do
             {
-                Console.Write("Geben Sie den gewünschten Grenzwert ein: ");
+                Console.Write("\nGeben Sie den gewünschten Grenzwert ein: ");
 
                 string rowFilterValue = Console.ReadLine();
 
@@ -220,8 +272,48 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 Console.WriteLine(filterdData[i].AppName + "  " + filterdData[i].Price);
             }
         } //Ausgabe gehört noch gemacht
-
-        //Exception Handling gehört noch gemacht
+        static void ErrorHandlingStream(int error)//Zehetner
+        {
+            if (error != 0)
+            {
+                if (error == 1)
+                {
+                    Console.WriteLine("Path was null (empty)!\n");
+                }
+                if (error == 2)
+                {
+                    Console.WriteLine("Not authorized!\n");
+                }
+                if (error == 3)
+                {
+                    Console.WriteLine("Folder not found!\n");
+                }
+                if (error == 4)
+                {
+                    Console.WriteLine("Path too Long!\n");
+                }
+                if (error == 5)
+                {
+                    Console.WriteLine("File interaction error!\n");
+                }
+                if (error == 6)
+                {
+                    Console.WriteLine("Path invalid!\n");
+                }
+                if (error == 7)
+                {
+                    Console.WriteLine("Security error!\n");
+                }
+                if (error == 8)
+                {
+                    Console.WriteLine("File not found!\n");
+                }
+                if (error == 99)
+                {
+                    Console.WriteLine("Unknown Error!\n");
+                }
+            }
+        }
 
         //Daten in Datei laden
     }

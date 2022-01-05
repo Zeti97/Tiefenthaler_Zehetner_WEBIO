@@ -15,13 +15,15 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         #endregion
 
         #region methoden
-        public static List<AppData> LoadDataFromWeb(string path,char seperator, out int error)
+        public static List<AppData> LoadDataFromWeb(string path,char seperator ,out int error ,out int invalidDataLines)
         {
             List<AppData> appDataList = new List<AppData>();
             WebClient client = new WebClient();
-            Stream contentStream = client.OpenRead(path);    //new Streamreader() -> stream
+            Stream contentStream = client.OpenRead(path);    
             error = 0;
+           invalidDataLines = 0;
             int counter = 0;
+
 
             try
             {
@@ -38,8 +40,11 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                             {
                                 appDataList.Add(newDataLine);
                             }
+                            else invalidDataLines++;
+
                         }
                         counter++;
+                        
                     }
 
                 }
