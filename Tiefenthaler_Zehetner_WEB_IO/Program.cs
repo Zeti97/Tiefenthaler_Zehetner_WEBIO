@@ -269,7 +269,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         {
             for (int i = 0; i < filterdData.ToArray().Length; i++)
             {
-                Console.WriteLine(filterdData[i].AppName + "  " + filterdData[i].Price);
+                Console.WriteLine(filterdData[i].CreateLineForConsole());
             }
         } //Ausgabe gehört noch gemacht
         static void ErrorHandlingStream(int error)//Zehetner

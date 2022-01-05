@@ -188,7 +188,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             LastUpdated = lastUpdated;
             CurrentVersion = currentVersion;
             AndroidVersion = androidVersion;
-        }    
+        }
         #endregion
         #region methods
         public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)
@@ -203,7 +203,9 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             bool successfulRating = int.TryParse(parts[2], out int rating);
             bool successfulReviews = int.TryParse(parts[3], out int reviews);
             double size = ConvertSizeToDouble(parts[4], out bool successfulSize);
-            bool successfulInstall = long.TryParse(parts[5], System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out long install);
+            bool successfulInstall = long.TryParse(parts[5], System.Globalization.NumberStyles.Number,
+                                                   System.Globalization.NumberFormatInfo.InvariantInfo,
+                                                   out long install);
             EnumType.TypeSelection type = (EnumType.TypeSelection)Enum.Parse(typeof(EnumType.TypeSelection), parts[6]);
             bool successfulPrice = double.TryParse(parts[7], out double price);
             string content = parts[8];
@@ -212,12 +214,16 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string currentVersion = parts[10];
             string androidVersion = parts[11];
 
-            readOfDataSuccesfull = successfulRating && successfulReviews && successfulSize && successfulInstall && successfulPrice && successfulLastUpdated;
-            
+            readOfDataSuccesfull = successfulRating && successfulReviews &&
+                                   successfulSize && successfulInstall &&
+                                   successfulPrice && successfulLastUpdated;
+
             //create new object of class AppData
-            if(readOfDataSuccesfull)
+            if (readOfDataSuccesfull)
             {
-                readData = new(appName, category, rating, reviews, size, install, type, price, content, genres, lastUpdated, currentVersion, androidVersion);
+                readData = new(appName, category, rating, reviews, size,
+                               install, type, price, content, genres,
+                               lastUpdated, currentVersion, androidVersion);
             }
             return readData;
         }
@@ -225,36 +231,48 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         {
             double convertedSize = 0;
             converssionSuccess = false;
-            if(inputSize.Trim() == "Varies with device" || inputSize.EndsWith('k') || inputSize.EndsWith('M'))
+            if (inputSize.Trim() == "Varies with device")
             {
-                if(inputSize.Trim() == "Varies with device")
-                {
-                    convertedSize = -100;
-                    converssionSuccess = true;
-                }
-                if (inputSize.EndsWith('k'))
-                {
-                    converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out double readSize);
-                    convertedSize =  readSize / 1000;
-                }
-                if (inputSize.EndsWith('M'))
-                {
-                    converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1), System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.InvariantInfo, out convertedSize);
-                }
+                convertedSize = -100;
+                converssionSuccess = true;
             }
-            else
+            if (inputSize.EndsWith('k'))
             {
-                converssionSuccess = false;
+                converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1),
+                                                     System.Globalization.NumberStyles.Number,
+                                                     System.Globalization.NumberFormatInfo.InvariantInfo,
+                                                     out double readSize);
+                convertedSize = readSize / 1000;
             }
+            if (inputSize.EndsWith('M'))
+            {
+                converssionSuccess = double.TryParse(inputSize.Remove(inputSize.Length - 1),
+                                                     System.Globalization.NumberStyles.Number,
+                                                     System.Globalization.NumberFormatInfo.InvariantInfo,
+                                                     out convertedSize);
+            }
+
             return convertedSize;
         }
         public string DataToCsvLine(char seperator)
         {
             string csvLine =
-                AppName + seperator + Category + seperator + Rating + seperator + Reviews + seperator + Size + seperator + Install + seperator + Type + seperator + Price + seperator + Content + seperator + Genres + seperator + LastUpdated.ToShortDateString() + seperator + CurrentVersion + seperator + AndroidVersion;
-
-
+                AppName + seperator + Category + seperator + Rating + seperator +
+                Reviews + seperator + Size + seperator + Install + seperator +
+                Type + seperator + Price + seperator + Content + seperator +
+                Genres + seperator + LastUpdated.ToShortDateString() + seperator +
+                CurrentVersion + seperator + AndroidVersion;
             return csvLine;
+        }
+        public string CreateLineForConsole()
+        {
+            string lineForConsole = AppName.PadRight(82) + Category.PadRight(20) + Rating.ToString().PadRight(4) + 
+                                    Reviews.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(10) +
+                                    Size.ToString().PadLeft(6) + "M  " + Install.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(15) +
+                                    Type.ToString().PadRight(6) + Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo) +
+                                    Content.PadRight(14) + Genres.PadRight(18) + LastUpdated.ToShortDateString().PadRight(12) +
+                                    CurrentVersion.PadRight(35) + AndroidVersion.PadRight(20);
+            return lineForConsole;
         }
         #endregion
     }
