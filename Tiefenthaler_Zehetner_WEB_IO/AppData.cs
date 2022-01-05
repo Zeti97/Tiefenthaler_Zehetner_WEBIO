@@ -285,7 +285,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             {
                 sizeString = "Varies with device";
             }
-            if(toConvertSize < 1)
+            if(toConvertSize < 1 && toConvertSize > 0)
             {
                 double sizekFormat = toConvertSize * 1000;
                 sizeString = sizekFormat.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + 'k';

@@ -22,6 +22,10 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             //Write Filterd Data to Console
             WriteFilteredDataToConsole(filteredData);
 
+            //Write all Data to File
+            string filePathOfCompletList = "completedAppData.csv";
+            WriteAllAppDataToFile(listHealthFitness.ToArray(), listPhotography.ToArray(), listWeather.ToArray(), filePathOfCompletList, "Fitness", "Fotografie", "Wetter");
+            
             Console.ReadKey();
         }
         static void ReadData(out List<AppData> HealthFitness, out List<AppData> Photography, out List<AppData> Weather)//Zehetner
@@ -33,53 +37,38 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             //Health and Fitness
             HealthFitness = DataLoader.LoadDataFromWeb(pathHealthFitness, ';', out int errorHealthAndFitness, out int invalidDataLinesHealthFitness);
-
-
             if (errorHealthAndFitness > 0)
             {
-                Console.WriteLine("Es ist ein unerwarteter Fehler beim Lesen der Fitness Apps aufgetretten,\n" +
-                    "Es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
-                    "Fehler: ");
+                ErrorHandlingStream(errorHealthAndFitness, "Lesen der Fitness Apps");
             }
-            ErrorHandlingStream(errorHealthAndFitness);
-
             if (invalidDataLinesHealthFitness > 0)
             {
-                Console.WriteLine("Es konnten " + invalidDataLinesHealthFitness + " Zeilen der Fitness Apps nicht geladen werden!\n");
+                WriteNumberOfInvalidLinesToConsole(invalidDataLinesHealthFitness, "Fitness");
             }
 
             //Photography
             Photography = DataLoader.LoadDataFromWeb(pathPhotography, ';', out int errorPhotography, out int invalidDataLinesPhotography);
-           
             if (errorPhotography > 0)
             {
-                Console.WriteLine("Es ist ein unerwarteter Fehler beim Lesen der Fotografie Apps aufgetretten,\n" +
-                    "es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
-                    "Fehler: ");
+                ErrorHandlingStream(errorPhotography, "Lesen der Fotografie Apps");
             }
-            ErrorHandlingStream(errorPhotography);
-
             if (invalidDataLinesPhotography > 0)
             {
-                Console.WriteLine("Es konnten " + invalidDataLinesPhotography + " Zeilen der Fotografie Apps nicht geladen werden!\n");
+                WriteNumberOfInvalidLinesToConsole(invalidDataLinesPhotography, "Fotografie");
             }
 
             //Weather
             Weather = DataLoader.LoadDataFromWeb(pathWeather, ';', out int errorWeather, out int invalidDataLinesWeather);
-             if (errorWeather > 0)
+            if (errorWeather > 0)
             {
-                Console.WriteLine("\nEs ist ein unerwarteter Fehler beim Lesen der Wetter Apps aufgetretten,\n" +
-                    "es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
-                    "Fehler: ");
+                ErrorHandlingStream(errorWeather, "Lesen der Wetter Apps");
             }
-            ErrorHandlingStream(errorWeather);
-
             if (invalidDataLinesWeather > 0)
             {
-                Console.WriteLine("Es konnten " + invalidDataLinesWeather + " Zeilen der Wetter Apps nicht geladen werden!\n");
+                WriteNumberOfInvalidLinesToConsole(invalidDataLinesWeather, "Wetter");
             }
         }
-        static List<AppData> FilterData(List<AppData> listHealthFitness,List<AppData> listPhotography,List<AppData> listWeather)//Zehetner
+        static List<AppData> FilterData(List<AppData> listHealthFitness, List<AppData> listPhotography, List<AppData> listWeather)//Zehetner
         {
             List<AppData> listForFilter = new List<AppData>();
             List<AppData> filterdData = new List<AppData>();
@@ -89,16 +78,16 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             bool filterOverallDataSelection = AskYesOrNo();
             int categoryNumber = 0;
 
-            if(filterOverallDataSelection == true)
+            if (filterOverallDataSelection == true)
             {
                 listForFilter.AddRange(listHealthFitness);
                 listForFilter.AddRange(listPhotography);
                 listForFilter.AddRange(listWeather);
             }
 
-            else if(filterOverallDataSelection == false)
+            else if (filterOverallDataSelection == false)
             {
-                if(categoryNumber == 1)
+                if (categoryNumber == 1)
                 {
                     listForFilter = listHealthFitness;
                 }
@@ -218,7 +207,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             return fitlerTypeNumber;
         }
-        static bool AskMinOrMax ()//Zehetner
+        static bool AskMinOrMax()//Zehetner
         {
             bool inputDataInCorrectDataFormat = false;
             bool minOrMax = false;
@@ -272,10 +261,13 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 Console.WriteLine(filterdData[i].CreateLineForConsole());
             }
         }
-        static void ErrorHandlingStream(int error)//Zehetner
+        static void ErrorHandlingStream(int error, string nameOfAktion)//Zehetner
         {
             if (error != 0)
             {
+                Console.WriteLine("Es ist ein unerwarteter Fehler beim " + nameOfAktion + " aufgetretten,\n" +
+                    "Es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
+                    "Fehler: ");
                 if (error == 1)
                 {
                     Console.WriteLine("Path was null (empty)!\n");
@@ -314,7 +306,38 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 }
             }
         }
+        static void WriteNumberOfInvalidLinesToConsole(int counter, string typOfApp)//Tiefenthaler
+        {
+            string naming = "n";
+            if (counter == 1)
+            {
+                naming = null;
+            }
+            Console.WriteLine("Es konnte" + naming + " " + counter + " Zeile" + naming + " der " + typOfApp + " Apps nicht geladen werden!\n");
+        }
+        static void WriteAllAppDataToFile(AppData[] dataArray1, AppData[] dataArray2, AppData[] dataArray3, string filePath, string name1, string name2, string name3)//Tiefenthaler
+        {
+            //Health and Fitness
+            DataLoader.WriteAppDataToFile(dataArray1, filePath, false, out int errorWriterHealth);
+            if (errorWriterHealth > 0)
+            {
+                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name1 + " Apps in eine Datei");
+            }
 
-        //Daten in Datei laden
+            //Photography
+            DataLoader.WriteAppDataToFile(dataArray2, filePath, true, out int errorWriterPhotography);
+            if (errorWriterPhotography > 0)
+            {
+                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name2 + " Apps in eine Datei");
+            }
+
+            //Weather
+            DataLoader.WriteAppDataToFile(dataArray3, filePath, true, out int errorWriterWeather);
+            if (errorWriterWeather > 0)
+            {
+                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name3 + " Apps in eine Datei");
+            }
+        }
+            
     }
 }
