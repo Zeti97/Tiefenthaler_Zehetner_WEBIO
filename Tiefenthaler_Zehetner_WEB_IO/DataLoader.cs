@@ -73,7 +73,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             }
             return appDataList;
         }
-        public static List<AppData> FilterAppData(List<AppData> appData, int filterCategory, bool minOrMaxFilter, int filterValue)
+        public static List<AppData> FilterAppData(List<AppData> appData, int filterCategory, bool minOrMaxFilter, double filterValue)
         {
             //FilterCategory
             //1...Price
@@ -106,12 +106,12 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 if (filterCategory == 2)
                 {
                     //Min Value ==> all Values over this value;
-                    if (appData[i].Reviews >= filterValue && minOrMaxFilter == false)
+                    if (appData[i].Reviews >= Math.Round(filterValue) && minOrMaxFilter == false)
                     {
                         filterdAppData.Add(appData[i]);
                     }
                     //Max Value ==> all Values under this value;
-                    if (appData[i].Reviews <= filterValue && minOrMaxFilter == true)
+                    if (appData[i].Reviews <= Math.Round(filterValue) && minOrMaxFilter == true)
                     {
                         filterdAppData.Add(appData[i]);
                     }
@@ -120,12 +120,12 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 if (filterCategory == 3)
                 {
                     //Min Value ==> all Values over this value;
-                    if (appData[i].Size >= filterValue && minOrMaxFilter == false)
+                    if (appData[i].Size >= Math.Round(filterValue) && minOrMaxFilter == false)
                     {
                         filterdAppData.Add(appData[i]);
                     }
                     //Max Value ==> all Values under this value;
-                    if (appData[i].Size <= filterValue && minOrMaxFilter == true)
+                    if (appData[i].Size <= Math.Round(filterValue) && minOrMaxFilter == true)
                     {
                         filterdAppData.Add(appData[i]);
                     }

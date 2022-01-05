@@ -81,6 +81,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             Console.WriteLine("\nWollen Sie über alle Daten Filtern? J/N");
             bool filterOverallDataSelection = AskYesOrNo();
             int categoryNumber = 0;
+           
 
             if (filterOverallDataSelection == true)
             {
@@ -89,8 +90,10 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 listForFilter.AddRange(listWeather);
             }
 
-            else if (filterOverallDataSelection == false)
+                
+            if (filterOverallDataSelection == false)
             {
+                categoryNumber = AskAndCheckCategoryNumber();
                 if (categoryNumber == 1)
                 {
                     listForFilter = listHealthFitness;
@@ -103,38 +106,42 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 {
                     listForFilter = listWeather;
                 }
-                categoryNumber = AskAndCheckCategoryNumber();
             }
-
-            //Ask Filter Type
-            int filterTypeNumber = AskFilterType();
-
-            //AskIfMinOrMaxValue
-            bool minOrMax = AskMinOrMax();
-
-            //Ask Filter Value
-            int filterValue = AskFilterValue();
-
-            //Filter Data
-            filterdData = DataLoader.FilterAppData(listForFilter, filterTypeNumber, minOrMax, filterValue);
 
             //Ask if also other filter
             bool filterAgain = false;
+            int oldfilterTypeNumer = 0;
             do
             {
-                Console.WriteLine("\nWollen Sie zusätzlich auf eine andere Kategorie filtern? J/N");
-                filterAgain = AskYesOrNo();
+                //Ask Filter Type
+                int filterTypeNumber = AskFilterType();
 
-                if (filterAgain == true)
+                //AskIfMinOrMaxValue
+                bool minOrMax = AskMinOrMax();
+
+                //Ask Filter Value
+                double filterValue = AskFilterValue();
+
+                //Filter Data
+                if (oldfilterTypeNumer == 0)
                 {
-                    filterTypeNumber = AskFilterType();
+                    filterdData = DataLoader.FilterAppData(listForFilter, filterTypeNumber, minOrMax, filterValue);
+                }
 
+                else if (oldfilterTypeNumer != filterTypeNumber)
+                {
                     listForFilter.Clear();
                     listForFilter = filterdData;
                     filterdData = DataLoader.FilterAppData(listForFilter, filterTypeNumber, minOrMax, filterValue);
                 }
+
+                Console.WriteLine("\nWollen Sie zusätzlich auf eine andere Kategorie filtern? J/N");
+                filterAgain = AskYesOrNo();
+
+                oldfilterTypeNumer = filterTypeNumber;
             }
             while (filterAgain);
+
 
             return filterdData;
 
@@ -194,9 +201,9 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             do
             {
                 Console.WriteLine("\nÜber welches Kriterium wollen Sie filtern? \n" +
-                    "1...Preis\n" +
-                    "2...Rezensionen\n" +
-                    "3...Dateigröße");
+                    "1...Preis[Euro]\n" +
+                    "2...Rezensionen[Anzahl]\n" +
+                    "3...Dateigröße[MB]");
                 string rowTypeNumber = Console.ReadLine();
 
                 bool conversationOfTypeNumberOk = int.TryParse(rowTypeNumber, out fitlerTypeNumber);
@@ -236,17 +243,17 @@ namespace Tiefenthaler_Zehetner_WEB_IO
 
             return minOrMax;
         }
-        static int AskFilterValue()//Zehetner
+        static double AskFilterValue()//Zehetner
         {
             bool filterValueInCorrectFormat = false;
-            int filterValue;
+            double filterValue;
             do
             {
                 Console.Write("\nGeben Sie den gewünschten Grenzwert ein: ");
 
                 string rowFilterValue = Console.ReadLine();
 
-                bool conversationOfFilterValueOK = int.TryParse(rowFilterValue, out filterValue);
+                bool conversationOfFilterValueOK = double.TryParse(rowFilterValue, out filterValue);
 
                 if (conversationOfFilterValueOK)
                 {
@@ -261,10 +268,14 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         static void WriteFilteredDataToConsole(List<AppData> filterdData)//Tiefenthaler
         {
             Console.WriteLine();
-            for (int i = 0; i < filterdData.ToArray().Length; i++)
+            if (filterdData.ToArray().Length > 0)
             {
-                Console.WriteLine(filterdData[i].CreateLineForConsole());
+                for (int i = 0; i < filterdData.ToArray().Length; i++)
+                {
+                    Console.WriteLine(filterdData[i].CreateLineForConsole());
+                }
             }
+            else Console.WriteLine("Es wurden keine Daten in diesem Bereich gefunden!");
         }
         static void ErrorHandlingStream(int error, string nameOfAktion)//Zehetner
         {
