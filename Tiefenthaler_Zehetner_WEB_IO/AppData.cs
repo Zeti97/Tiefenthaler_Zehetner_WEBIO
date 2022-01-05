@@ -212,8 +212,8 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string content = parts[8];
             string genres = parts[9];
             bool successfulLastUpdated = DateTime.TryParse(parts[10], out DateTime lastUpdated);
-            string currentVersion = parts[10];
-            string androidVersion = parts[11];
+            string currentVersion = parts[11];
+            string androidVersion = parts[12];
 
             readOfDataSuccesfull = successfulRating && successfulReviews &&
                                    successfulSize && successfulInstall && successfulType &&
@@ -259,7 +259,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             string csvLine =
                 AppName + seperator + Category + seperator + Rating + seperator +
                 Reviews + seperator + ConvertSizeToString(Size) + seperator + 
-                Install.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + "+" + seperator +
+                Install.ToString("0,000",System.Globalization.NumberFormatInfo.InvariantInfo) + "+" + seperator +
                 Type + seperator + Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo) + seperator + 
                 Content + seperator + Genres + seperator + LastUpdated.ToShortDateString() + seperator +
                 CurrentVersion + seperator + AndroidVersion;
@@ -267,15 +267,15 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         }
         public string CreateLineForConsole()//Tiefenthaler
         {
-            string lineForConsole = AppName.PadRight(82) + Category.PadRight(20) + Rating.ToString().PadRight(4) + 
+            string lineForConsole = AppName.PadRight(82) +"\n"+ Category.PadRight(20) + Rating.ToString().PadRight(4) + 
                                     Reviews.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(10) +
-                                    ConvertSizeToString(Size).PadRight(6) + 
-                                    Install.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadLeft(15) + "+  " +
+                                    ConvertSizeToString(Size).PadRight(20) + 
+                                    Install.ToString("0,000", System.Globalization.NumberFormatInfo.CurrentInfo).PadLeft(15) + "+  " +
                                     Type.ToString().PadRight(6) + 
                                     Price.ToString(System.Globalization.NumberFormatInfo.CurrentInfo).PadRight(8) +
                                     Content.PadRight(14) + Genres.PadRight(18) + 
                                     LastUpdated.ToShortDateString().PadRight(12) +
-                                    CurrentVersion.PadRight(35) + AndroidVersion.PadRight(20);
+                                    CurrentVersion.PadRight(35) + AndroidVersion.PadRight(20) + "\n";
             return lineForConsole;
         }
         public static string ConvertSizeToString(double toConvertSize)//Tiefenthaler

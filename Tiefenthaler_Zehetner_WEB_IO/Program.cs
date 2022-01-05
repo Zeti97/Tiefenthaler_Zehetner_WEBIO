@@ -23,8 +23,12 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             WriteFilteredDataToConsole(filteredData);
 
             //Write all Data to File
-            string filePathOfCompletList = "completedAppData.csv";
-            WriteAllAppDataToFile(listHealthFitness.ToArray(), listPhotography.ToArray(), listWeather.ToArray(), filePathOfCompletList, "Fitness", "Fotografie", "Wetter");
+            string filePathOfCompletList = @"..\..\..\..\completedAppData.csv";
+            filteredData.Clear();
+            filteredData.AddRange(listHealthFitness);
+            filteredData.AddRange(listPhotography);
+            filteredData.AddRange(listWeather);
+            WriteAllAppDataToFile(filteredData.ToArray(), filePathOfCompletList);
             
             Console.ReadKey();
         }
@@ -256,6 +260,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         }
         static void WriteFilteredDataToConsole(List<AppData> filterdData)//Tiefenthaler
         {
+            Console.WriteLine();
             for (int i = 0; i < filterdData.ToArray().Length; i++)
             {
                 Console.WriteLine(filterdData[i].CreateLineForConsole());
@@ -315,27 +320,12 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             }
             Console.WriteLine("Es konnte" + naming + " " + counter + " Zeile" + naming + " der " + typOfApp + " Apps nicht geladen werden!\n");
         }
-        static void WriteAllAppDataToFile(AppData[] dataArray1, AppData[] dataArray2, AppData[] dataArray3, string filePath, string name1, string name2, string name3)//Tiefenthaler
+        static void WriteAllAppDataToFile(AppData[] dataArrayToWrite,  string filePath)//Tiefenthaler
         {
-            //Health and Fitness
-            DataLoader.WriteAppDataToFile(dataArray1, filePath, false, out int errorWriterHealth);
+            DataLoader.WriteAppDataToFile(dataArrayToWrite, filePath, false, out int errorWriterHealth);
             if (errorWriterHealth > 0)
             {
-                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name1 + " Apps in eine Datei");
-            }
-
-            //Photography
-            DataLoader.WriteAppDataToFile(dataArray2, filePath, true, out int errorWriterPhotography);
-            if (errorWriterPhotography > 0)
-            {
-                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name2 + " Apps in eine Datei");
-            }
-
-            //Weather
-            DataLoader.WriteAppDataToFile(dataArray3, filePath, true, out int errorWriterWeather);
-            if (errorWriterWeather > 0)
-            {
-                ErrorHandlingStream(errorWriterHealth, "Schreiben der " + name3 + " Apps in eine Datei");
+                ErrorHandlingStream(errorWriterHealth, "Schreiben der Appdaten in eine Datei");
             }
         }
             
