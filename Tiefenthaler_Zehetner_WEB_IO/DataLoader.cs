@@ -143,6 +143,7 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             {
                 using(StreamWriter writer = new StreamWriter(filePath, appendDecision))
                 {
+                    writer.WriteLine("App;Category;Rating;Reviews;Size;Installs;Type;Price;Content Rating;Genres;Last Updated;Current Ver;Android Ver");
                     for (int i = 0; i < toWriteData.Length; i++)
                     {
                         writer.WriteLine(toWriteData[i].DataToCsvLine(';'));
