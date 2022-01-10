@@ -19,14 +19,14 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         public static List<AppData> LoadDataFromWeb(string path, char seperator, out int error, out int invalidDataLines)
         {
             List<AppData> appDataList = new List<AppData>();
-            WebClient client = new WebClient();
-            Stream contentStream = client.OpenRead(path);
             error = 0;
             invalidDataLines = 0;
-            int counter = 0;
-
             try
             {
+                WebClient client = new WebClient();
+                Stream contentStream = client.OpenRead(path);
+                int counter = 0;
+
                 using (StreamReader reader = new StreamReader(contentStream))
                 {
                     while (reader.Peek() != -1)
@@ -65,6 +65,10 @@ namespace Tiefenthaler_Zehetner_WEB_IO
             catch (ArgumentException)
             {
                 error = 6;
+            }
+            catch (WebException)
+            {
+                error = 9;
             }
             catch (Exception)
             {

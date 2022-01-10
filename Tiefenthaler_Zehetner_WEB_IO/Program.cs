@@ -284,41 +284,63 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                 Console.WriteLine("Es ist ein unerwarteter Fehler beim " + nameOfAktion + " aufgetretten,\n" +
                     "Es konnten möglicherweise nicht alle Daten gelesen werden!\n" +
                     "Fehler: ");
-                if (error == 1)
+                switch (error)
                 {
-                    Console.WriteLine("Path was null (empty)!\n");
-                }
-                if (error == 2)
-                {
-                    Console.WriteLine("Not authorized!\n");
-                }
-                if (error == 3)
-                {
-                    Console.WriteLine("Folder not found!\n");
-                }
-                if (error == 4)
-                {
-                    Console.WriteLine("Path too Long!\n");
-                }
-                if (error == 5)
-                {
-                    Console.WriteLine("File interaction error!\n");
-                }
-                if (error == 6)
-                {
-                    Console.WriteLine("Path invalid!\n");
-                }
-                if (error == 7)
-                {
-                    Console.WriteLine("Security error!\n");
-                }
-                if (error == 8)
-                {
-                    Console.WriteLine("File not found!\n");
-                }
-                if (error == 99)
-                {
-                    Console.WriteLine("Unknown Error!\n");
+                    case 1:
+                        {
+                            Console.WriteLine("Path was null (empty)!\n");
+                            break;
+                        }
+                    case 2:
+                        {
+                            Console.WriteLine("Not authorized!\n");
+                            break;
+                        }
+                    case 3:
+                        {
+                            Console.WriteLine("Folder not found!\n");
+                            break;
+                        }
+                    case 4:
+                        {
+                            Console.WriteLine("Path too Long!\n");
+                            break;
+                        }
+                    case 5:
+                        {
+                            Console.WriteLine("File interaction error!\n");
+                            break;
+                        }
+                    case 6:
+                        {
+                            Console.WriteLine("Path invalid!\n");
+                            break;
+                        }
+                    case 7:
+                        {
+                            Console.WriteLine("Security error!\n");
+                            break;
+                        }
+                    case 8:
+                        {
+                            Console.WriteLine("File not found!\n");
+                            break;
+                        }
+                    case 9:
+                        {
+                            Console.WriteLine("The access to the network wasn't available.\n");
+                            break;
+                        }
+                    case 99:
+                        {
+                            Console.WriteLine("Unknown Error!\n");
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("Value of Error is invalid!\n");
+                            break;
+                        }
                 }
             }
         }
