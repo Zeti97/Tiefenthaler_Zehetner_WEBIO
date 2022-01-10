@@ -34,9 +34,8 @@ namespace Tiefenthaler_Zehetner_WEB_IO
                         string line = reader.ReadLine();
                         if (counter > 0)
                         {
-                            AppData newDataLine = AppData.ReadDataLine(line, seperator, out bool readSuccessfull);
-
-                            if (readSuccessfull)
+                            AppData newDataLine = AppData.ReadDataLine(line, seperator);
+                            if (newDataLine != null)
                             {
                                 appDataList.Add(newDataLine);
                             }

@@ -191,10 +191,10 @@ namespace Tiefenthaler_Zehetner_WEB_IO
         }
         #endregion
         #region methods
-        public static AppData ReadDataLine(string dataLine, char seperator, out bool readOfDataSuccesfull)//Tiefenthaler
+        public static AppData ReadDataLine(string dataLine, char seperator)//Tiefenthaler
         {
-            readOfDataSuccesfull = false;
-            AppData readData = new();
+            bool readOfDataSuccesfull = false;
+            AppData readData = null;
             string[] parts = dataLine.Split(seperator);
 
             //convert stringdata to correct Datatype
